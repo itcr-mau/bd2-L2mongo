@@ -1,14 +1,19 @@
+print("=== Iniciando setup de base de datos Ferreteria === " + new Date().toISOString());
 use("Ferreteria");
+print("Base de datos seleccionada: " + db.getName());
 
 // Eliminar la colección si existe
 // No se usa db.Productos?.drop() ya que me daba errores al ejecutarlo en mongosh
 try {
+  print("Verificando colección 'Productos' (si existe, se eliminará)...");
     db.Productos.drop();
     print("Colección 'Productos' eliminada exitosamente");
 } catch (e) {
     print("La colección 'Productos' no existe");
+  try { if (e && e.message) print("Detalle: " + e.message); } catch (_) {}
 }
 
+print("Creando colección 'Productos' con validación de schema...");
 db.createCollection("Productos", {
   validator: {
     $jsonSchema: {
@@ -97,8 +102,10 @@ db.createCollection("Productos", {
   validationAction: "error", // “warn” para solo avisar
   validationLevel: "strict" // “moderate” para validar solo inserts o campos cambiados
 });
+print("Colección 'Productos' creada/validada correctamente.");
 
-db.Productos.insertMany([
+print("Insertando documentos de ejemplo en 'Productos'...");
+const insertResult = db.Productos.insertMany([
     { sku: "P001", nombre: "Martillo Pro Acero", categoria: "Herramientas", precio: 7500, stock: 20, creadoEn: ISODate("2025-03-01T10:00:00Z") },
     { sku: "P002", nombre: "Destornillador Phillips #2", categoria: "Herramientas", precio: 2500, stock: 60, creadoEn: ISODate("2025-03-02T11:00:00Z") },
     { sku: "P003", nombre: "Llave Inglesa 10\"", categoria: "Herramientas", precio: 5200, stock: 35, creadoEn: ISODate("2025-03-03T09:00:00Z") },
@@ -112,4 +119,31 @@ db.Productos.insertMany([
     { sku: "P011", nombre: "Rodillo de Pintura 9\" Antigota", categoria: "Pinturas", precio: 4200, stock: 40, creadoEn: ISODate("2025-03-11T08:00:00Z") },
     { sku: "P012", nombre: "Brocha 2\" Cerdas Naturales", categoria: "Pinturas", precio: 2100, stock: 80, creadoEn: ISODate("2025-03-12T17:00:00Z") }
 ]);
+try {
+  const inserted = insertResult && insertResult.insertedIds ? Object.keys(insertResult.insertedIds).length : 0;
+  print("Documentos insertados: " + inserted);
+} catch (_) {}
+
+try {
+  const total = db.Productos.countDocuments();
+  print("Total de documentos en 'Productos': " + total);
+} catch (e) {
+  print("No fue posible contar documentos: " + (e && e.message ? e.message : e));
+}
+
+try {
+  print("Índices actuales en 'Productos':");
+  printjson(db.Productos.getIndexes());
+} catch (e) {
+  print("No fue posible obtener índices: " + (e && e.message ? e.message : e));
+}
+
+try {
+  print("Muestra de 3 documentos (sku, nombre, categoria):");
+  printjson(db.Productos.find({}, { _id: 0, sku: 1, nombre: 1, categoria: 1 }).limit(3).toArray());
+} catch (e) {
+  print("No fue posible obtener muestra: " + (e && e.message ? e.message : e));
+}
+
+print("=== Setup completado correctamente === " + new Date().toISOString());
  
