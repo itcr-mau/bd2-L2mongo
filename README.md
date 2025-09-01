@@ -31,7 +31,14 @@ mongosh "mongodb+srv://bd2.zbo2sqn.mongodb.net/" --apiVersion 1 --username bd2
 
 ---
 
-### Parte A: Consultas Básicas (find) 
+## Repositorio
+
+- Repositorio: [itcr-mau/bd2-L2mongo](https://github.com/itcr-mau/bd2-L2mongo)
+
+---
+
+### Parte A: Consultas Básicas (find)
+
 1. Mostrar todos los productos con solo sku, nombre y precio.
 2. Consultar los productos con precio mayor a 10,000 CRC ordenados descendentemente.
 3. Consultar los productos de la categoría Seguridad o Pinturas.
@@ -39,20 +46,24 @@ mongosh "mongodb+srv://bd2.zbo2sqn.mongodb.net/" --apiVersion 1 --username bd2
 5. Consultar productos cuyo nombre empiece con la letra P, sin importar mayúsculas o minúsculas.
 6. Implementar paginación mostrando 5 productos después de saltar 3, ordenados por nombre.
 
-### Parte B: Updates 
+### Parte B: Updates
+
 1. Cambiar el precio de un producto específico a un nuevo valor.
 2. Incrementar el stock de un producto en una cantidad determinada.
 3. Agregar un nuevo campo tags a un producto con un arreglo de etiquetas.
 4. Normalizar el nombre de un producto (por ejemplo cambiar 'IA' por 'Inteligencia Artificial').
 
-### Parte C: Upsert 
+### Parte C: Upsert
+
 1. Realizar un upsert sobre un producto por su sku. Si existe, actualizar el stock; si no existe, insertarlo con todos los datos.
 
-### Parte D: Deletes 
+### Parte D: Deletes
+
 1. Eliminar un producto específico por su sku.
 2. Eliminar todos los productos con stock menor a 10 unidades.
 
-### Parte E: Agregaciones 
+### Parte E: Agregaciones
+
 1. Calcular precio promedio, mínimo y máximo por categoría.
 2. Calcular el valor total de inventario por categoría (precio * stock).
 3. Mostrar el top 3 de productos más caros.
@@ -70,7 +81,7 @@ mongosh "mongodb+srv://bd2.zbo2sqn.mongodb.net/" --apiVersion 1 --username bd2
 15. Clasificar productos por niveles de stock (Bajo, Medio, Alto).
 16. Listar productos que contengan comillas en su nombre.
 17. Mostrar catálogo resumido por categoría con los 5 productos más caros y nombres representativos.
-18. Crear un campo derivado precioConIVA (13%) y mostrarlo en un reporte.	
+18. Crear un campo derivado precioConIVA (13%) y mostrarlo en un reporte.
 
 ---
 
@@ -78,9 +89,9 @@ mongosh "mongodb+srv://bd2.zbo2sqn.mongodb.net/" --apiVersion 1 --username bd2
 
 Este repositorio contiene la solución completa del Taller MongoDB con los siguientes archivos:
 
-- **`setup.js`**: Creación de la colección `Productos` con validación de schema e inserción de datos de prueba.
-- **`index.js`**: Archivo ejecutable en `mongosh` que contiene todos los queries solicitados, organizados por partes (A-E) con títulos descriptivos y salida formateada con `printjson`.
-- **`.vscode/tasks.json`**: Configuración de VS Code para conectar automáticamente a MongoDB Atlas.
+- **[setup.js](./setup.js)**: Creación de la colección `Productos` con validación de schema e inserción de datos de prueba.
+- **[index.js](./index.js)**: Archivo ejecutable en `mongosh` que contiene todos los queries solicitados, organizados por partes (A-E) con títulos descriptivos y salida formateada con `printjson`.
+- **[.vscode/tasks.json](./.vscode/tasks.json)**: Configuración de VS Code para conectar automáticamente a MongoDB Atlas.
 
 Todos los ejercicios están implementados siguiendo el formato solicitado, cada uno con su respectivo `console.log` descriptivo y la impresión de resultados.
 
@@ -124,3 +135,38 @@ printjson(
     db.Productos.findOne({ sku: "P002" })
 )
 ```
+
+---
+
+## Cómo ejecutar
+
+Puedes ejecutar los scripts con `mongosh` o usando la tarea de VS Code incluida.
+
+1. Usando VS Code
+
+   - Ejecuta la tarea “Conectar a MongoDB Atlas” desde la paleta de comandos.
+   - En la consola de `mongosh` que se abre, corre:
+     - `load('./setup.js')` para crear la colección y cargar datos.
+     - `load('./index.js')` para ejecutar todas las consultas (A–E).
+
+2. Desde terminal con `mongosh` directamente
+
+   - Interactivo (pedirá la contraseña del usuario `bd2`):
+
+     ```bash
+     mongosh "mongodb+srv://bd2.zbo2sqn.mongodb.net/" --apiVersion 1 --username bd2
+     # En el prompt de mongosh
+     load('./setup.js')
+     load('./index.js')
+     ```
+
+   - No interactivo (incluye la contraseña en la llamada):
+
+     ```bash
+     mongosh "mongodb+srv://bd2.zbo2sqn.mongodb.net/" --apiVersion 1 --username bd2 --password '5YkEejQmtK9XOeUV' --file ./setup.js
+     mongosh "mongodb+srv://bd2.zbo2sqn.mongodb.net/" --apiVersion 1 --username bd2 --password '5YkEejQmtK9XOeUV' --file ./index.js
+     ```
+
+### Notas
+
+- Los scripts ya hacen `use("Ferreteria")` internamente.
